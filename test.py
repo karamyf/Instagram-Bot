@@ -1,51 +1,45 @@
-from instapy import InstaPy
-from instapy import smart_run
+from instapy import InstaPy 
 
-# login
-insta_username = 'username'
-insta_password = 'password'
+print("------------- Welcome To InstaBot --------------")
+uname = input("Enter Your Username : ")
+passw = input("Enter Your Password : ")
 
-# headless_browser=True = running in the background
-session = InstaPy(username=insta_username,
-                  password=insta_password,
-                  headless_browser=False)
+#headless_browser = True if you want to hide your browser
+session = InstaPy(username = uname, password = passw ,headless_browser=True,want_check_browser=False)
+session.login()
+
+#You can set max and min followers here
+session.set_relationship_bounds(enabled = True, max_followers = 290)
 
 
+selected = input("Select : 1 2 3 4 5 : ")
 
 
-with smart_run(session):
-    """ Activity flow """
-    # general settings
-    session.set_relationship_bounds(enabled=True,
-                                    delimit_by_numbers=True,
-                                    max_followers=510,
-                                    min_followers=31,
-                                    min_following=29)
+def process(selected):
 
-    # activities
+    session.set_comments(['your feed is aweeesome','loove it ❤❤','(͡° ͜ʖ ͡°)','In love with this❤❤❤❤❤'])
 
-    """ Joining Engagement Pods...
-    """
-    photo_comments = ['your feed is aaawesome !',
-        'in looove with your photos ! @{}',
-        'ur photos are awesoome  :thumbsup:',
-       'OMG ❤:open_mouth:',
-        'My goodness, how impressive!',
-        'OMG how impressive!!!',
-        'Keep up the good work',
-        'Great doing!!',
-        'ur feed is just a piece of art❤' ]
-    session.set_do_follow(True, percentage=100)
-    session.set_do_comment(enabled = True, percentage = 50)
-    session.set_comments(photo_comments, media = 'Photo')
-    #session.follow_user_followers(['casabookstore', 'book__taif','zedenya'], amount=10, randomize=False, sleep_delay=130)
-    session.like_by_tags(["readers","bookslover","أصدقاء_الكتب","كتاب","moroccanreaders","morocco"], amount = 10)
-   #session.interact_user_followers(['casabookstore', 'book__taif'], amount=10, randomize=True)
-    #unfollow users who don't follow you back
-    #session.unfollow_users(amount=126, nonFollowers=True, style="RANDOM", unfollow_after=42*60*60, sleep_delay=655)
-    
-    #interact with user likers
-    #session.interact_user_likers(usernames=["zedenya", "casabookstore"],
-                             #posts_grab_amount=10,
-                             #interact_likers_per_post=5,
-                             #randomize=True)
+    def tags_process():
+
+        list_tags = []
+
+        print("Enter 3 Tags")
+        list_tags[0] = input("Tag #1 : ")
+        list_tags[1] = input("Tag #2 : ")
+        list_tags[2] = input("Tag #3 : ")
+        
+        session.like_by_tags(list_tags, amount = 3)
+
+    switcher = {
+
+        1:session.set_do_follow(True, percentage=100),
+        2:session.set_do_comment(True, percentage=40),
+        3:tags_process(),
+        4:session.set_dont_like(["nsfw"]),
+        5:session.unfollow_users(amount=6, allFollowing=True, sleep_delay=60)
+    }
+    return switcher.get(selected, "nothing")
+
+  
+process(selected)
+session.end()
